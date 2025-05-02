@@ -112,75 +112,99 @@ INSERT INTO PROFCAR VALUES
 
 
 
-SELECT p.nombre
-FROM PROFESOR p
-JOIN PROFCAR pc ON p.codprof = pc.codprof
-WHERE pc.codcarr = '001';
+-- CONSULTA 1: Profesores que dictan en la carrera con código '001' (Ingeniería de Sistemas)
+SELECT p.nombre                 -- Seleccionamos el nombre del profesor (alias 'p')
+FROM PROFESOR p                -- Tabla PROFESOR con alias 'p'
+JOIN PROFCAR pc ON p.codprof = pc.codprof   -- Unimos con la tabla PROFCAR (alias 'pc') usando el código del profesor
+WHERE pc.codcarr = '001';      -- Filtramos por carrera con código '001' (Ingeniería de Sistemas)
 
 
 
--- Alumnos en Derecho
-SELECT a.nombre
-FROM ALUMNO a
-JOIN MATRICULA m ON a.codigoest = m.codigoest
-WHERE m.codcarr = '004';
 
--- Profesores en Derecho
-SELECT p.nombre
-FROM PROFESOR p
-JOIN PROFCAR pc ON p.codprof = pc.codprof
-WHERE pc.codcarr = '004';
+-- CONSULTA 2: Alumnos matriculados en la carrera de Derecho (código '004')
+SELECT a.nombre                -- Seleccionamos el nombre del alumno (alias 'a')
+FROM ALUMNO a                  -- Tabla ALUMNO con alias 'a'
+JOIN MATRICULA m ON a.codigoest = m.codigoest  -- Unimos con la tabla MATRICULA (alias 'm') por el código del estudiante
+WHERE m.codcarr = '004';       -- Filtramos por carrera con código '004' (Derecho)
 
 
-
--- Alumnos en Derecho
-SELECT a.nombre
-FROM ALUMNO a
-JOIN MATRICULA m ON a.codigoest = m.codigoest
-WHERE m.codcarr = '004';
-
--- Profesores en Derecho
-SELECT p.nombre
-FROM PROFESOR p
-JOIN PROFCAR pc ON p.codprof = pc.codprof
-WHERE pc.codcarr = '004';
+-- CONSULTA 3: Profesores que enseñan en la carrera de Derecho (código '004')
+SELECT p.nombre                -- Seleccionamos el nombre del profesor (alias 'p')
+FROM PROFESOR p                -- Tabla PROFESOR con alias 'p'
+JOIN PROFCAR pc ON p.codprof = pc.codprof   -- Unimos con la tabla PROFCAR (alias 'pc') por el código del profesor
+WHERE pc.codcarr = '004';      -- Filtramos por carrera con código '004' (Derecho)
 
 
 
-SELECT a.nombre, m.valorsemestre
-FROM MATRICULA m
-JOIN ALUMNO a ON m.codigoest = a.codigoest
-WHERE m.codcarr = '008';
+
+-- CONSULTA 4: Alumnos y el valor del semestre en Veterinaria (código '008')
+SELECT a.nombre,               -- Seleccionamos el nombre del alumno (alias 'a')
+       m.valorsemestre         -- Seleccionamos el valor que paga por el semestre (alias 'm')
+FROM MATRICULA m               -- Tabla MATRICULA con alias 'm'
+JOIN ALUMNO a ON m.codigoest = a.codigoest  -- Unimos con la tabla ALUMNO (alias 'a') por el código del estudiante
+WHERE m.codcarr = '008';       -- Filtramos por carrera con código '008' (Veterinaria)
 
 
-SELECT a.nombre
-FROM ALUMNO a
-JOIN MATRICULA m ON a.codigoest = m.codigoest
-JOIN PROFESOR p ON m.codprof = p.codprof
-WHERE p.nombre = 'Portacio Cartagena';
+-- CONSULTA EXTRA 1: Mostrar los profesores que enseñan en la carrera con código '004' (Derecho)
+SELECT p.nombre                        -- Seleccionamos el nombre del profesor (alias 'p')
+FROM PROFESOR p                        -- Tabla de profesores con alias 'p'
+JOIN PROFCAR pc ON p.codprof = pc.codprof   -- Unimos con la tabla PROFCAR (alias 'pc') por el campo codprof (código del profesor)
+WHERE pc.codcarr = '004';             -- Filtramos para que solo muestre profesores de la carrera con código '004' (Derecho)
 
 
 
-SELECT MAX(valorsemestre) AS valor_mas_alto FROM MATRICULA;
+
+-- CONSULTA EXTRA 2: Mostrar alumnos con el valor pagado del semestre en la carrera de Veterinaria (código '008')
+SELECT a.nombre,                       -- Seleccionamos el nombre del alumno (alias 'a')
+       m.valorsemestre                 -- Seleccionamos el valor del semestre que paga el alumno (alias 'm')
+FROM MATRICULA m                       -- Tabla de matrícula con alias 'm'
+JOIN ALUMNO a ON m.codigoest = a.codigoest  -- Unimos con la tabla ALUMNO (alias 'a') usando el código del estudiante
+WHERE m.codcarr = '008';               -- Filtramos por la carrera con código '008' (Veterinaria)
 
 
-SELECT AVG(valorsemestre) AS promedio_semestre FROM MATRICULA;
+-- CONSULTA EXTRA 3: Mostrar los alumnos que ven clases con el profesor 'Portacio Cartagena'
+SELECT a.nombre                        -- Seleccionamos el nombre del alumno (alias 'a')
+FROM ALUMNO a                          -- Tabla ALUMNO con alias 'a'
+JOIN MATRICULA m ON a.codigoest = m.codigoest  -- Unimos con la tabla MATRICULA (alias 'm') por código del estudiante
+JOIN PROFESOR p ON m.codprof = p.codprof       -- Unimos con la tabla PROFESOR (alias 'p') por código del profesor
+WHERE p.nombre = 'Portacio Cartagena';         -- Filtramos por el nombre exacto del profesor
 
 
-SELECT nombre
+
+
+-- CONSULTA 6: Mostrar el valor más alto pagado por semestre
+SELECT MAX(valorsemestre) AS valor_mas_alto  -- Usamos la función MAX() para obtener el valor máximo y le damos un alias
+FROM MATRICULA;                 -- De la tabla MATRICULA
+
+
+-- CONSULTA 7: Calcular el promedio del valor del semestre
+SELECT AVG(valorsemestre) AS promedio_semestre  -- Usamos AVG() para calcular el promedio y lo nombramos como 'promedio_semestre'
+FROM MATRICULA;                 -- De la tabla MATRICULA
+
+-- CONSULTA 8: Alumnos cuyos nombres comienzan con 'A' o terminan con 'r'
+SELECT nombre                   -- Seleccionamos el nombre directamente de la tabla ALUMNO
 FROM ALUMNO
-WHERE nombre LIKE 'A%' OR nombre LIKE '%r';
+WHERE nombre LIKE 'A%'         -- Filtramos nombres que comienzan con 'A' (A%)
+   OR nombre LIKE '%r';        -- O que terminan en 'r' (%r)
 
 
 
-SELECT c.descripcion, SUM(m.valorsemestre) AS total_pagado
-FROM MATRICULA m
-JOIN CARRERA c ON m.codcarr = c.codcarr
-GROUP BY c.descripcion;
+-- CONSULTA 9: Total pagado por carrera
+SELECT c.descripcion,          -- Seleccionamos la descripción de la carrera (alias 'c')
+       SUM(m.valorsemestre) AS total_pagado  -- Sumamos el valor del semestre (alias 'm') y lo llamamos 'total_pagado'
+FROM MATRICULA m               -- Tabla MATRICULA con alias 'm'
+JOIN CARRERA c ON m.codcarr = c.codcarr  -- Unimos con la tabla CARRERA (alias 'c') por el código de la carrera
+GROUP BY c.descripcion;        -- Agrupamos los resultados por descripción de carrera para sumar correctamente
 
 
 
-SELECT a.nombre
-FROM ALUMNO a
-WHERE a.codigoest NOT IN (SELECT codigoest FROM MATRICULA);
+
+-- CONSULTA 10: Alumnos que no tienen matrícula registrada
+SELECT a.nombre                -- Seleccionamos el nombre del alumno (alias 'a')
+FROM ALUMNO a                  -- Tabla ALUMNO con alias 'a'
+WHERE a.codigoest NOT IN (     -- Usamos NOT IN para excluir a los estudiantes que están en:
+  SELECT codigoest             -- Subconsulta: obtiene los códigos de estudiantes con matrícula
+  FROM MATRICULA
+);
+
 
